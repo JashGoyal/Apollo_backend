@@ -11,7 +11,7 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-const MONGODB_URL = 'mongodb://127.0.0.1:27017/doctor';
+const MONGODB_URL = process.env.MONGODB_API;
 
 mongoose.connect(MONGODB_URL)
     .then(() => console.log('Connected to MongoDB'))
