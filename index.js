@@ -1,18 +1,24 @@
 const express  = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors');
+const dotenv = require('dotenv');
 const app = express();
-const PORT = 3000;
+const api = require('./Doctor');
+const PORT = process.env.PORT || 3000;
+
+dotenv.config();
+
+app.use(cors());
+app.use(express.json());
 
 const MONGODB_URL = 'mongodb://127.0.0.1:27017/doctor';
 
 mongoose.connect(MONGODB_URL)
-// , {
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true
-// })
     .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('MongoDB connection error:', err ));
+    .catch((err) => console.error('MongoDB connection error:', err.message ));
 
+app.use('/api/doctors', api )
+    
 app.get('/', (req, res) => {
     res.send('Server is working!');
 });
