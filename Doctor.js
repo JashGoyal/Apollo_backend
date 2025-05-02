@@ -46,5 +46,39 @@ router.post('/adddoctor', async (req, res) => {
     }
 });
 
+router.get('/filter' , async (req, res) => {
+    try {
+      const {
+        specialization,
+        minExperience,
+        maxFees,
+        language,
+        page = 1,
+        limit = 10
+      } = req.query;
+  
+      const filter = {};
+  
+      if (specialization) filter.specialization = specialization;
+      if (minExperience) filter.experience = { $gte: Number(minExperience) };
+      if (maxFees) filter.fees = { $lte: Number(maxFees) };
+      if (language) filter.languagesSpoken = { $in: [language] };
+  
+      const doctors = await Doctor.find(filter)
+        .skip((page - 1) * limit)
+        .limit(Number(limit));
+  
+      const total = await Doctor.countDocuments(filter);
+  
+      res.json({
+        data: doctors,
+        currentPage: Number(page),
+        totalPages: Math.ceil(total / limit),
+        total
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
 
 module.exports = router;
