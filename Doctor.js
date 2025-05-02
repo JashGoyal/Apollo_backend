@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const express  = require('express')
 const router = express.Router();
 
 const doctorSchema = new mongoose.Schema({
@@ -25,6 +26,15 @@ const doctorSchema = new mongoose.Schema({
 });
 
 const Doctor = mongoose.model("Doctor", doctorSchema);
+
+router.get('/all', async (req, res) => {
+    try {
+      const doctors = await Doctor.find();
+      res.json(doctors);
+    } catch (err) {
+      res.status(500).json({ error: "Failed to fetch doctors" });
+    }
+  });
 
 router.post('/adddoctor', async (req, res) => {
     try {
